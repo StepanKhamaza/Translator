@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Service</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Translate Text</h1>
+    <form id="translateForm" method="GET">
+        <label for="text">Text to Translate:</label>
+        <input type="text" id="text" name="text" required>
+
+        <label for="sourceLang">Source Language (en, ru, etc.):</label>
+        <input type="text" id="sourceLang" name="sourceLang" required>
+
+        <label for="targetLang">Target Language (ru, en, etc.):</label>
+        <input type="text" id="targetLang" name="targetLang" required>
+
+        <button type="submit">Translate</button>
+    </form>
+    <p id="result"></p>
+</div>
+
+<script>
+    document.getElementById('translateForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const text = document.getElementById('text').value;
+        const sourceLang = document.getElementById('sourceLang').value;
+        const targetLang = document.getElementById('targetLang').value;
+        const requestData = {
+            text: text,
+            sourceLang: sourceLang,
+            targetLang: targetLang
+        };
+
+        fetch('/api/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.Translations != null)
+                    document.getElementById('result').innerText = `Translations: ${data.Translations}`;
+                else
+                    document.getElementById('result').innerText = `Error: ${data.Error}`;
+            });
+    });
+</script>
+</body>
+</html>
